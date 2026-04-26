@@ -7,13 +7,12 @@
 
   <!-- Unique ID for this add-in. Generated once; do not change. -->
   <Id>09f5450f-6618-4f40-973f-2e0077fe13cf</Id>
-  <Version>1.0.0.0</Version>
+  <Version>1.2.0.0</Version>
   <ProviderName>Gil RTL Fix</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="RTL by Default"/>
-  <Description DefaultValue="Automatically applies right-to-left direction and right alignment to every new email."/>
+  <Description DefaultValue="Automatically applies right-to-left direction to new emails, plus a button to toggle RTL/LTR manually."/>
 
-  <!-- These URLs MUST be replaced with your hosting URLs (see README). -->
   <IconUrl DefaultValue="https://Brushlessgum.github.io/outlook-rtl-addin/icons/icon-64.png"/>
   <HighResolutionIconUrl DefaultValue="https://Brushlessgum.github.io/outlook-rtl-addin/icons/icon-128.png"/>
   <SupportUrl DefaultValue="https://Brushlessgum.github.io/outlook-rtl-addin/"/>
@@ -71,12 +70,36 @@
           <DesktopFormFactor>
             <FunctionFile resid="Commands.Url"/>
 
-            <!-- This is the magic part: hook the OnNewMessageCompose event. -->
+            <!-- 1) Automatic: hook OnNewMessageCompose so new emails open RTL. -->
             <ExtensionPoint xsi:type="LaunchEvent">
               <LaunchEvents>
                 <LaunchEvent Type="OnNewMessageCompose" FunctionName="onNewMessageComposeHandler"/>
               </LaunchEvents>
               <SourceLocation resid="WebViewRuntime.Url"/>
+            </ExtensionPoint>
+
+            <!-- 2) Manual: a "Toggle RTL" button on the compose ribbon. -->
+            <ExtensionPoint xsi:type="MessageComposeCommandSurface">
+              <OfficeTab id="TabDefault">
+                <Group id="rtlGroup">
+                  <Label resid="GroupLabel"/>
+                  <Control xsi:type="Button" id="rtlToggleButton">
+                    <Label resid="ToggleLabel"/>
+                    <Supertip>
+                      <Title resid="ToggleTitle"/>
+                      <Description resid="ToggleDescription"/>
+                    </Supertip>
+                    <Icon>
+                      <bt:Image size="16" resid="Icon.16x16"/>
+                      <bt:Image size="32" resid="Icon.32x32"/>
+                      <bt:Image size="80" resid="Icon.80x80"/>
+                    </Icon>
+                    <Action xsi:type="ExecuteFunction">
+                      <FunctionName>toggleRtlHandler</FunctionName>
+                    </Action>
+                  </Control>
+                </Group>
+              </OfficeTab>
             </ExtensionPoint>
 
           </DesktopFormFactor>
@@ -97,9 +120,13 @@
         </bt:Urls>
         <bt:ShortStrings>
           <bt:String id="LaunchEvent.Title" DefaultValue="RTL by Default"/>
+          <bt:String id="GroupLabel" DefaultValue="Direction"/>
+          <bt:String id="ToggleLabel" DefaultValue="Toggle RTL"/>
+          <bt:String id="ToggleTitle" DefaultValue="Toggle RTL / LTR"/>
         </bt:ShortStrings>
         <bt:LongStrings>
           <bt:String id="LaunchEvent.Description" DefaultValue="Applies RTL direction to new emails."/>
+          <bt:String id="ToggleDescription" DefaultValue="Switch the email body between right-to-left and left-to-right direction."/>
         </bt:LongStrings>
       </Resources>
 

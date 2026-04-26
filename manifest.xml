@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+           xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
+           xsi:type="MailApp">
+
+  <!-- Unique ID for this add-in. Generated once; do not change. -->
+  <Id>09f5450f-6618-4f40-973f-2e0077fe13cf</Id>
+  <Version>1.0.0.0</Version>
+  <ProviderName>Gil RTL Fix</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="RTL by Default"/>
+  <Description DefaultValue="Automatically applies right-to-left direction and right alignment to every new email."/>
+
+  <!-- These URLs MUST be replaced with your hosting URLs (see README). -->
+  <IconUrl DefaultValue="https://Brushlessgum.github.io/outlook-rtl-addin/icons/icon-64.png"/>
+  <HighResolutionIconUrl DefaultValue="https://Brushlessgum.github.io/outlook-rtl-addin/icons/icon-128.png"/>
+  <SupportUrl DefaultValue="https://Brushlessgum.github.io/outlook-rtl-addin/"/>
+
+  <AppDomains>
+    <AppDomain>https://Brushlessgum.github.io</AppDomain>
+  </AppDomains>
+
+  <Hosts>
+    <Host Name="Mailbox"/>
+  </Hosts>
+
+  <Requirements>
+    <Sets>
+      <Set Name="Mailbox" MinVersion="1.10"/>
+    </Sets>
+  </Requirements>
+
+  <FormSettings>
+    <Form xsi:type="ItemRead">
+      <DesktopSettings>
+        <SourceLocation DefaultValue="https://Brushlessgum.github.io/outlook-rtl-addin/commands.html"/>
+        <RequestedHeight>250</RequestedHeight>
+      </DesktopSettings>
+    </Form>
+  </FormSettings>
+
+  <Permissions>ReadWriteItem</Permissions>
+
+  <Rule xsi:type="RuleCollection" Mode="Or">
+    <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read"/>
+    <Rule xsi:type="ItemIs" ItemType="Message" FormType="Edit"/>
+  </Rule>
+
+  <DisableEntityHighlighting>false</DisableEntityHighlighting>
+
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides" xsi:type="VersionOverridesV1_0">
+    <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides/1.1" xsi:type="VersionOverridesV1_1">
+
+      <Requirements>
+        <bt:Sets DefaultMinVersion="1.10">
+          <bt:Set Name="Mailbox"/>
+        </bt:Sets>
+      </Requirements>
+
+      <Hosts>
+        <Host xsi:type="MailHost">
+
+          <Runtimes>
+            <Runtime resid="WebViewRuntime.Url">
+              <Override type="javascript" resid="JSRuntime.Url"/>
+            </Runtime>
+          </Runtimes>
+
+          <DesktopFormFactor>
+            <FunctionFile resid="Commands.Url"/>
+
+            <!-- This is the magic part: hook the OnNewMessageCompose event. -->
+            <ExtensionPoint xsi:type="LaunchEvent">
+              <LaunchEvents>
+                <LaunchEvent Type="OnNewMessageCompose" FunctionName="onNewMessageComposeHandler"/>
+              </LaunchEvents>
+              <SourceLocation resid="WebViewRuntime.Url"/>
+            </ExtensionPoint>
+
+          </DesktopFormFactor>
+
+        </Host>
+      </Hosts>
+
+      <Resources>
+        <bt:Images>
+          <bt:Image id="Icon.16x16" DefaultValue="https://Brushlessgum.github.io/outlook-rtl-addin/icons/icon-16.png"/>
+          <bt:Image id="Icon.32x32" DefaultValue="https://Brushlessgum.github.io/outlook-rtl-addin/icons/icon-32.png"/>
+          <bt:Image id="Icon.80x80" DefaultValue="https://Brushlessgum.github.io/outlook-rtl-addin/icons/icon-80.png"/>
+        </bt:Images>
+        <bt:Urls>
+          <bt:Url id="Commands.Url" DefaultValue="https://Brushlessgum.github.io/outlook-rtl-addin/commands.html"/>
+          <bt:Url id="WebViewRuntime.Url" DefaultValue="https://Brushlessgum.github.io/outlook-rtl-addin/commands.html"/>
+          <bt:Url id="JSRuntime.Url" DefaultValue="https://Brushlessgum.github.io/outlook-rtl-addin/commands.js"/>
+        </bt:Urls>
+        <bt:ShortStrings>
+          <bt:String id="LaunchEvent.Title" DefaultValue="RTL by Default"/>
+        </bt:ShortStrings>
+        <bt:LongStrings>
+          <bt:String id="LaunchEvent.Description" DefaultValue="Applies RTL direction to new emails."/>
+        </bt:LongStrings>
+      </Resources>
+
+    </VersionOverrides>
+  </VersionOverrides>
+</OfficeApp>
